@@ -571,8 +571,6 @@
         <div class="chat-input">
             <input type="text" id="messageInput" placeholder="Faça uma pergunta sobre minha carreira..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()" id="sendButton">Enviar</button>
-            <button onclick="testLovePopup()" style="background: #ff6b9d; margin-left: 5px; border-radius: 25px; padding: 12px 15px; font-size: 14px; font-weight: 600; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(255, 107, 157, 0.3);">💕 Teste Amor</button>
-            <button onclick="testLoveMessage()" style="background: #e91e63; margin-left: 5px; border-radius: 25px; padding: 12px 15px; font-size: 14px; font-weight: 600; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);">💝 Teste Msg</button>
         </div>
     </div>
 
@@ -1144,24 +1142,7 @@
             });
         }
         
-        // Test function to verify popup works
-        function testLovePopup() {
-            console.log('Testing love popup...');
-            try {
-                showLovePopup();
-                console.log('Love popup test completed successfully');
-            } catch (error) {
-                console.error('Error testing love popup:', error);
-                alert('Erro ao testar pop-up de amor: ' + error.message);
-            }
-        }
-        
-        // Test function with love message
-        function testLoveMessage() {
-            const input = document.getElementById('messageInput');
-            input.value = 'Você tem namorada?';
-            sendMessage();
-        }
+
         
         // Check for love-related questions
         function checkForLoveQuestion(message) {
