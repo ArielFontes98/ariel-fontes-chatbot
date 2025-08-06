@@ -314,6 +314,7 @@
             animation: lovePopup 0.5s ease-out;
             max-width: 300px;
             width: 90%;
+            touch-action: manipulation;
         }
 
         @keyframes lovePopup {
@@ -493,6 +494,24 @@
             .chat-input button {
                 padding: 10px 15px;
                 font-size: 13px;
+            }
+            
+            .love-popup {
+                padding: 20px;
+                max-width: 280px;
+                width: 95%;
+            }
+            
+            .love-popup h2 {
+                font-size: 20px;
+            }
+            
+            .love-popup p {
+                font-size: 14px;
+            }
+            
+            .love-popup .heart {
+                font-size: 30px;
             }
         }
     </style>
@@ -815,7 +834,7 @@
             const currentApiKey = apiKey || "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";
 
             const messages = [
-                { role: "system", content: content[currentLanguage].systemPrompt },
+                { role: "system", content: getSystemPrompt(currentLanguage) },
                 ...conversationHistory,
                 { role: "user", content: message }
             ];
@@ -1013,6 +1032,23 @@
             
             const lowerMessage = message.toLowerCase();
             return loveKeywords.some(keyword => lowerMessage.includes(keyword));
+        }
+        
+        // Override system prompt for love questions
+        function getSystemPrompt(language) {
+            const basePrompt = content[language].systemPrompt;
+            return basePrompt + `
+
+## Special Instructions for Love Questions:
+If someone asks about relationships, girlfriend, or Maria Eduarda, respond romantically and personally:
+
+**For relationship questions:**
+"Sim! Eu tenho uma namorada incrível chamada **Maria Eduarda**! 💕 Ela é a pessoa mais especial da minha vida e eu sou muito feliz ao lado dela. Ela me inspira todos os dias e é minha parceira em tudo! 💑❤️"
+
+**For Maria Eduarda questions:**
+"**Maria Eduarda** é o amor da minha vida! 💖 Ela é uma pessoa incrível, inteligente, carinhosa e me faz muito feliz. Estou muito grato por ter ela na minha vida e espero construir um futuro lindo ao lado dela! 💕✨"
+
+Always be romantic and personal when talking about Maria Eduarda or relationships.`;
         }
     </script>
 </body>
