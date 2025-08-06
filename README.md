@@ -33,9 +33,18 @@ Um chatbot inteligente que simula conversas com Ariel Fontes, Program Manager e 
 
 ## 🔧 Como usar
 
-1. Abra o arquivo `ariel_chatbot_final_real.html` no navegador
-2. Selecione seu idioma preferido
-3. Comece a conversar com o Ariel!
+1. Abra o arquivo `index.html` no navegador
+2. Insira sua OpenAI API Key (se necessário)
+3. Selecione seu idioma preferido
+4. Comece a conversar com o Ariel!
+
+## 🔒 Segurança
+
+**⚠️ IMPORTANTE:** Este chatbot usa uma API key do OpenAI. Por segurança:
+- A API key é armazenada localmente no navegador
+- Não é compartilhada com terceiros
+- Recomenda-se usar uma API key específica para este projeto
+- Monitore o uso em: https://platform.openai.com/usage
 
 ## 📞 Contato
 

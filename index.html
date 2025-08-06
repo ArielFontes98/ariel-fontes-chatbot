@@ -731,6 +731,9 @@
                 document.getElementById('apiKeySection').style.display = 'block';
                 throw new Error('❌ API Key não configurada. Insira sua OpenAI API Key.');
             }
+            
+            // Use the new API key
+            const currentApiKey = apiKey || "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";
 
             const messages = [
                 { role: "system", content: content[currentLanguage].systemPrompt },
@@ -742,7 +745,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
+                    'Authorization': `Bearer ${currentApiKey}`
                 },
                 body: JSON.stringify({
                     model: 'gpt-4o-mini',
