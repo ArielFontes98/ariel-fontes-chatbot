@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ariel Fontes - Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .chat-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .chat-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .profile-info {
+            background: rgba(255,255,255,0.1);
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .bot-message {
+            background: white;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+        
+        .chat-input button {
+            margin-left: 10px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .chat-input button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 12px 18px;
+            background: white;
+            border-radius: 18px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        
+        .clear-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .clear-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <button class="clear-btn" onclick="clearChat()">Limpar</button>
+            <h1>👨‍💼 Ariel Fontes</h1>
+            <p>Program Manager & Consultant</p>
+            <div class="profile-info">
+                📍 São Paulo, Brazil | 🏀 Basketball | 🌳 Bonsai | ✈️ Travel
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Olá! Sou Ariel Fontes, Program Manager com experiência em consultoria, analytics e tecnologia. Como posso ajudá-lo hoje?
+            </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+            Ariel está digitando...
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Faça uma pergunta sobre minha carreira..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        // Ariel's background information (simulating the summary.txt content)
+        const arielBackground = {
+            name: "Ariel Fontes",
+            role: "Program Manager",
+            location: "São Paulo, Brazil",
+            background: "consulting, analytics, technology, and internal operations",
+            interests: ["basketball", "bonsai trees", "traveling"],
+            workStyle: "fast-paced environments, projects that bring structure and clarity to complex problems",
+            philosophy: "deeply involved in data and strategy, but believes the best ideas often come over good conversation — ideally while eating sushi or something spicy"
+        };
+
+        // Responses based on Ariel's personality and background
+        const careerResponses = {
+            "carreira": [
+                "Sou Program Manager com foco em analytics, tecnologia e operações internas. Trabalho em ambientes dinâmicos resolvendo problemas complexos.",
+                "Minha experiência inclui consultoria, analytics e tecnologia. Gosto de projetos que trazem estrutura e clareza para problemas complexos.",
+                "Como Program Manager, trabalho com dados e estratégia, mas acredito que as melhores ideias vêm de boas conversas - idealmente comendo sushi!"
+            ],
+            "experiência": [
+                "Tenho experiência em consultoria, analytics e tecnologia. Trabalho com operações internas e estratégia de dados.",
+                "Minha experiência inclui gerenciamento de projetos complexos, analytics e consultoria estratégica.",
+                "Trabalho com dados e estratégia, mas valorizo muito a colaboração e boas conversas para resolver problemas."
+            ],
+            "tecnologia": [
+                "Tenho forte foco em tecnologia e analytics. Trabalho com dados para trazer clareza a problemas complexos.",
+                "Minha experiência em tecnologia inclui analytics e operações internas. Gosto de estruturar soluções tecnológicas.",
+                "Trabalho com tecnologia, analytics e estratégia. Acredito que dados bem estruturados são fundamentais."
+            ],
+            "consultoria": [
+                "Tenho experiência em consultoria, especialmente em analytics e operações internas. Gosto de resolver problemas complexos.",
+                "Minha experiência em consultoria inclui estratégia, analytics e tecnologia. Trabalho para trazer estrutura a problemas complexos.",
+                "Como consultor, trabalho com analytics e tecnologia para resolver problemas estratégicos."
+            ],
+            "analytics": [
+                "Tenho forte foco em analytics e dados. Trabalho para trazer clareza através de análise de dados.",
+                "Minha experiência em analytics inclui estratégia e tecnologia. Uso dados para resolver problemas complexos.",
+                "Trabalho com analytics, dados e estratégia. Acredito que dados bem analisados trazem insights valiosos."
+            ],
+            "basketball": [
+                "Sou apaixonado por basquete! É um dos meus hobbies favoritos junto com árvores bonsai e viagens.",
+                "Adoro basquete! É uma das minhas paixões, junto com bonsai e viagens.",
+                "Basquete é uma das minhas paixões! Gosto de esportes dinâmicos e competitivos."
+            ],
+            "bonsai": [
+                "Sou apaixonado por árvores bonsai! É um hobby que combina paciência e arte.",
+                "Adoro bonsai! É uma das minhas paixões, junto com basquete e viagens.",
+                "Bonsai é um dos meus hobbies favoritos! Gosto de cuidar das árvores e ver elas crescer."
+            ],
+            "viagem": [
+                "Adoro viajar! É uma das minhas paixões junto com basquete e bonsai.",
+                "Sou apaixonado por viagens! Gosto de conhecer novos lugares e culturas.",
+                "Viajar é uma das minhas paixões! Gosto de explorar novos destinos."
+            ],
+            "sushi": [
+                "Adoro sushi! Acredito que as melhores ideias vêm de boas conversas, idealmente comendo sushi ou algo picante.",
+                "Sushi é uma das minhas comidas favoritas! Gosto de conversas profundas acompanhadas de boa comida.",
+                "Adoro sushi! É perfeito para conversas produtivas e brainstorming."
+            ],
+            "default": [
+                "Sou Ariel Fontes, Program Manager com experiência em consultoria, analytics e tecnologia. Como posso ajudá-lo?",
+                "Trabalho com analytics, tecnologia e operações internas. Gosto de resolver problemas complexos.",
+                "Tenho experiência em consultoria e tecnologia. Gosto de projetos que trazem estrutura a problemas complexos.",
+                "Como Program Manager, trabalho com dados e estratégia. Acredito que as melhores ideias vêm de boas conversas!",
+                "Sou apaixonado por basquete, bonsai e viagens. Trabalho com analytics e tecnologia.",
+                "Gosto de ambientes dinâmicos e projetos que trazem clareza a problemas complexos."
+            ]
+        };
+
+        function getResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Check for specific topics
+            for (const [topic, responses] of Object.entries(careerResponses)) {
+                if (lowerMessage.includes(topic)) {
+                    return responses[Math.floor(Math.random() * responses.length)];
+                }
+            }
+            
+            // Default response
+            return careerResponses.default[Math.floor(Math.random() * careerResponses.default.length)];
+        }
+
+        function addMessage(message, isUser = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            typingIndicator.style.display = 'block';
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            typingIndicator.style.display = 'none';
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                input.value = '';
+                
+                // Show typing indicator
+                showTyping();
+                
+                // Get Ariel's response
+                setTimeout(() => {
+                    hideTyping();
+                    const response = getResponse(message);
+                    addMessage(response, false);
+                }, 1500);
+            }
+        }
+
+        function clearChat() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '<div class="message bot-message">Olá! Sou Ariel Fontes, Program Manager com experiência em consultoria, analytics e tecnologia. Como posso ajudá-lo hoje?</div>';
+        }
+    </script>
+</body>
+</html> 
