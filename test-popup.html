@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Pop-up de Amor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .test-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Love Popup Styles */
+        .love-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            z-index: 999999;
+            text-align: center;
+            animation: lovePopup 0.5s ease-out;
+            max-width: 300px;
+            width: 90%;
+        }
+
+        @keyframes lovePopup {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .love-popup h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .love-popup p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .love-popup .heart {
+            font-size: 40px;
+            margin: 10px 0;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .love-popup button {
+            background: white;
+            color: #c44569;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .love-popup button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999998;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>💕 Teste do Pop-up de Amor</h1>
+        <p>Clique nos botões abaixo para testar o pop-up de amor:</p>
+        
+        <button class="test-button" onclick="testLovePopup()">💕 Testar Pop-up</button>
+        <button class="test-button" onclick="testLoveMessage()">💝 Testar Mensagem</button>
+        <button class="test-button" onclick="testKeywords()">🔍 Testar Palavras-chave</button>
+        
+        <div id="results" style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px; text-align: left;">
+            <h3>Resultados dos Testes:</h3>
+            <div id="testOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        function showLovePopup() {
+            console.log('=== SHOW LOVE POPUP START ===');
+            
+            // Remove any existing popups first
+            closeLovePopup();
+            
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'popup-overlay';
+            overlay.style.zIndex = '999998';
+            overlay.onclick = closeLovePopup;
+            
+            // Create popup
+            const popup = document.createElement('div');
+            popup.className = 'love-popup';
+            popup.style.zIndex = '999999';
+            popup.innerHTML = `
+                <h2>💕 Amor da Minha Vida</h2>
+                <div class="heart">💖</div>
+                <p>Sim! Eu amo muito a <strong>Maria Eduarda</strong>! ❤️</p>
+                <p>Ela é a pessoa mais especial da minha vida e eu sou muito feliz ao lado dela! 💑</p>
+                <div class="heart">💝</div>
+                <button onclick="closeLovePopup()">Fechar</button>
+            `;
+            
+            // Prevent popup from closing when clicking inside it
+            popup.onclick = function(e) {
+                e.stopPropagation();
+            };
+            
+            // Add to DOM
+            document.body.appendChild(overlay);
+            document.body.appendChild(popup);
+            
+            console.log('Love popup created and added to DOM');
+            
+            // Auto close after 8 seconds
+            setTimeout(() => {
+                if (document.body.contains(popup)) {
+                    closeLovePopup();
+                }
+            }, 8000);
+            
+            console.log('=== SHOW LOVE POPUP END ===');
+        }
+        
+        function closeLovePopup() {
+            console.log('Closing love popup');
+            
+            // Remove all popup overlays
+            const overlays = document.querySelectorAll('.popup-overlay');
+            overlays.forEach(overlay => {
+                overlay.remove();
+                console.log('Overlay removed');
+            });
+            
+            // Remove all love popups
+            const popups = document.querySelectorAll('.love-popup');
+            popups.forEach(popup => {
+                popup.remove();
+                console.log('Popup removed');
+            });
+        }
+        
+        function testLovePopup() {
+            console.log('Testing love popup...');
+            try {
+                showLovePopup();
+                addTestResult('✅ Pop-up de amor testado com sucesso!');
+                console.log('Love popup test completed successfully');
+            } catch (error) {
+                console.error('Error testing love popup:', error);
+                addTestResult('❌ Erro ao testar pop-up de amor: ' + error.message);
+            }
+        }
+        
+        function testLoveMessage() {
+            const testMessages = [
+                'Você tem namorada?',
+                'Quem é Maria Eduarda?',
+                'Você está em um relacionamento?',
+                'Conte sobre seu amor',
+                'Você é casado?'
+            ];
+            
+            const randomMessage = testMessages[Math.floor(Math.random() * testMessages.length)];
+            addTestResult(`💝 Testando mensagem: "${randomMessage}"`);
+            
+            // Simulate love question detection
+            if (checkForLoveQuestion(randomMessage)) {
+                addTestResult('✅ Palavras-chave de amor detectadas!');
+                setTimeout(() => {
+                    showLovePopup();
+                }, 1000);
+            } else {
+                addTestResult('❌ Palavras-chave de amor NÃO detectadas');
+            }
+        }
+        
+        function testKeywords() {
+            const testCases = [
+                { message: 'Você tem namorada?', expected: true },
+                { message: 'Conte sobre sua carreira', expected: false },
+                { message: 'Quem é Maria Eduarda?', expected: true },
+                { message: 'Você trabalha onde?', expected: false },
+                { message: 'Você está em um relacionamento?', expected: true },
+                { message: 'Qual sua formação?', expected: false }
+            ];
+            
+            addTestResult('🔍 Testando palavras-chave...');
+            
+            testCases.forEach((testCase, index) => {
+                const result = checkForLoveQuestion(testCase.message);
+                const status = result === testCase.expected ? '✅' : '❌';
+                addTestResult(`${status} "${testCase.message}" - Esperado: ${testCase.expected}, Obtido: ${result}`);
+            });
+        }
+        
+        function checkForLoveQuestion(message) {
+            const loveKeywords = [
+                'namorada', 'namorado', 'maria eduarda', 'maria', 'eduarda',
+                'girlfriend', 'novia', 'amor', 'love', 'amante', 'lover',
+                'casal', 'couple', 'relacionamento', 'relationship', 'namoro',
+                'casamento', 'marriage', 'boda', 'wedding', 'noiva', 'fiancée',
+                'esposa', 'wife', 'marido', 'husband', 'parceira', 'partner',
+                'romance', 'romântico', 'romantic', 'coração', 'heart',
+                'feliz', 'happy', 'felicidade', 'happiness', 'vida amorosa',
+                'love life', 'vida sentimental', 'personal life'
+            ];
+            
+            const lowerMessage = message.toLowerCase();
+            const found = loveKeywords.some(keyword => lowerMessage.includes(keyword));
+            
+            return found;
+        }
+        
+        function addTestResult(message) {
+            const output = document.getElementById('testOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            output.innerHTML += `<div style="margin: 5px 0; padding: 5px; border-left: 3px solid #667eea; background: white;">[${timestamp}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // Initialize
+        addTestResult('🚀 Página de teste carregada!');
+    </script>
+</body>
+</html> 

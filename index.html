@@ -317,6 +317,7 @@
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            pointer-events: auto;
         }
 
         @keyframes lovePopup {
@@ -570,7 +571,8 @@
         <div class="chat-input">
             <input type="text" id="messageInput" placeholder="Faça uma pergunta sobre minha carreira..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()" id="sendButton">Enviar</button>
-            <button onclick="testLovePopup()" style="background: #ff6b9d; margin-left: 5px;">💕 Teste</button>
+            <button onclick="testLovePopup()" style="background: #ff6b9d; margin-left: 5px; border-radius: 25px; padding: 12px 15px; font-size: 14px; font-weight: 600; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(255, 107, 157, 0.3);">💕 Teste Amor</button>
+            <button onclick="testLoveMessage()" style="background: #e91e63; margin-left: 5px; border-radius: 25px; padding: 12px 15px; font-size: 14px; font-weight: 600; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);">💝 Teste Msg</button>
         </div>
     </div>
 
@@ -991,7 +993,8 @@
             
             // Check for love-related questions
             console.log('Checking message for love keywords:', message);
-            if (checkForLoveQuestion(message)) {
+            const isLoveQuestion = checkForLoveQuestion(message);
+            if (isLoveQuestion) {
                 console.log('Love question detected:', message);
                 setTimeout(() => {
                     console.log('About to show love popup');
@@ -1017,6 +1020,14 @@
                 
             } catch (error) {
                 addMessage(`Erro: ${error.message}`, false, true);
+                
+                // Show love popup even if there's an API error, if it's a love question
+                if (isLoveQuestion) {
+                    setTimeout(() => {
+                        console.log('Showing love popup after API error');
+                        showLovePopup();
+                    }, 2000);
+                }
             } finally {
                 hideTyping();
                 input.disabled = false;
@@ -1043,6 +1054,7 @@
         
         // Love popup functionality
         function showLovePopup() {
+            console.log('=== SHOW LOVE POPUP START ===');
             console.log('Showing love popup for language:', currentLanguage);
             
             // Remove any existing popups first
@@ -1053,6 +1065,7 @@
             overlay.className = 'popup-overlay';
             overlay.style.zIndex = '999998';
             overlay.onclick = closeLovePopup; // Close when clicking overlay
+            console.log('Overlay created');
             
             const loveMessages = {
                 pt: {
@@ -1076,10 +1089,12 @@
             };
             
             const lang = loveMessages[currentLanguage] || loveMessages.pt;
+            console.log('Language selected:', currentLanguage);
             
             // Create popup
             const popup = document.createElement('div');
             popup.className = 'love-popup';
+            popup.style.zIndex = '999999';
             popup.innerHTML = `
                 <h2>${lang.title}</h2>
                 <div class="heart">💖</div>
@@ -1088,6 +1103,7 @@
                 <div class="heart">💝</div>
                 <button onclick="closeLovePopup()" style="touch-action: manipulation;">${lang.closeButton}</button>
             `;
+            console.log('Popup created with content');
             
             // Prevent popup from closing when clicking inside it
             popup.onclick = function(e) {
@@ -1097,8 +1113,8 @@
             // Add to DOM
             document.body.appendChild(overlay);
             document.body.appendChild(popup);
-            
-            console.log('Love popup created and added to DOM');
+            console.log('Popup and overlay added to DOM');
+            console.log('Body children count:', document.body.children.length);
             
             // Auto close after 8 seconds
             setTimeout(() => {
@@ -1106,6 +1122,8 @@
                     closeLovePopup();
                 }
             }, 8000);
+            
+            console.log('=== SHOW LOVE POPUP END ===');
         }
         
         function closeLovePopup() {
@@ -1129,7 +1147,20 @@
         // Test function to verify popup works
         function testLovePopup() {
             console.log('Testing love popup...');
-            showLovePopup();
+            try {
+                showLovePopup();
+                console.log('Love popup test completed successfully');
+            } catch (error) {
+                console.error('Error testing love popup:', error);
+                alert('Erro ao testar pop-up de amor: ' + error.message);
+            }
+        }
+        
+        // Test function with love message
+        function testLoveMessage() {
+            const input = document.getElementById('messageInput');
+            input.value = 'Você tem namorada?';
+            sendMessage();
         }
         
         // Check for love-related questions
@@ -1138,7 +1169,11 @@
                 'namorada', 'namorado', 'maria eduarda', 'maria', 'eduarda',
                 'girlfriend', 'novia', 'amor', 'love', 'amante', 'lover',
                 'casal', 'couple', 'relacionamento', 'relationship', 'namoro',
-                'casamento', 'marriage', 'boda', 'wedding', 'noiva', 'fiancée'
+                'casamento', 'marriage', 'boda', 'wedding', 'noiva', 'fiancée',
+                'esposa', 'wife', 'marido', 'husband', 'parceira', 'partner',
+                'romance', 'romântico', 'romantic', 'coração', 'heart',
+                'feliz', 'happy', 'felicidade', 'happiness', 'vida amorosa',
+                'love life', 'vida sentimental', 'personal life'
             ];
             
             const lowerMessage = message.toLowerCase();
