@@ -570,6 +570,7 @@
         <div class="chat-input">
             <input type="text" id="messageInput" placeholder="Faça uma pergunta sobre minha carreira..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()" id="sendButton">Enviar</button>
+            <button onclick="showLovePopup()" style="background: #ff6b9d; margin-left: 5px;">💕 Teste Amor</button>
         </div>
     </div>
 
@@ -989,11 +990,15 @@
             input.value = '';
             
             // Check for love-related questions
+            console.log('Checking message for love keywords:', message);
             if (checkForLoveQuestion(message)) {
                 console.log('Love question detected:', message);
                 setTimeout(() => {
+                    console.log('About to show love popup');
                     showLovePopup();
                 }, 1000);
+            } else {
+                console.log('No love keywords found in message:', message);
             }
             
             // Add to conversation history
