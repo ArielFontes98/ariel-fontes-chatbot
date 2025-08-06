@@ -570,7 +570,7 @@
         <div class="chat-input">
             <input type="text" id="messageInput" placeholder="Faça uma pergunta sobre minha carreira..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()" id="sendButton">Enviar</button>
-            <button onclick="showLovePopup()" style="background: #ff6b9d; margin-left: 5px;">💕 Teste Amor</button>
+            <button onclick="testLovePopup()" style="background: #ff6b9d; margin-left: 5px;">💕 Teste</button>
         </div>
     </div>
 
@@ -1126,6 +1126,12 @@
             });
         }
         
+        // Test function to verify popup works
+        function testLovePopup() {
+            console.log('Testing love popup...');
+            showLovePopup();
+        }
+        
         // Check for love-related questions
         function checkForLoveQuestion(message) {
             const loveKeywords = [
@@ -1150,13 +1156,16 @@
             return basePrompt + `
 
 ## Special Instructions for Love Questions:
-If someone asks about relationships, girlfriend, or Maria Eduarda, respond romantically and personally:
+When someone asks about relationships, girlfriend, or Maria Eduarda, respond romantically and personally:
 
 **For relationship questions:**
 "Sim! Eu tenho uma namorada incrível chamada **Maria Eduarda**! 💕 Ela é a pessoa mais especial da minha vida e eu sou muito feliz ao lado dela. Ela me inspira todos os dias e é minha parceira em tudo! 💑❤️"
 
 **For Maria Eduarda questions:**
 "**Maria Eduarda** é o amor da minha vida! 💖 Ela é uma pessoa incrível, inteligente, carinhosa e me faz muito feliz. Estou muito grato por ter ela na minha vida e espero construir um futuro lindo ao lado dela! 💕✨"
+
+**For love questions:**
+"Sim! Eu amo muito a **Maria Eduarda**! ❤️ Ela é a pessoa mais especial da minha vida e eu sou muito feliz ao lado dela! 💑"
 
 Always be romantic and personal when talking about Maria Eduarda or relationships.`;
         }
