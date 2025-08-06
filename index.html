@@ -816,17 +816,41 @@
         }
 
         function updateContent() {
+            console.log('Updating content for language:', currentLanguage);
             const lang = content[currentLanguage];
-            document.getElementById('messageInput').placeholder = lang.placeholder;
-            document.getElementById('sendButton').textContent = lang.send;
-            document.querySelector('.clear-btn').textContent = lang.clear;
-            document.getElementById('typingIndicator').textContent = lang.typing;
+            
+            // Update input and buttons
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const clearBtn = document.querySelector('.clear-btn');
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            if (messageInput) messageInput.placeholder = lang.placeholder;
+            if (sendButton) sendButton.textContent = lang.send;
+            if (clearBtn) clearBtn.textContent = lang.clear;
+            if (typingIndicator) typingIndicator.textContent = lang.typing;
             
             // Update API key section
             const apiKeyText = document.getElementById('apiKeyText');
             const saveButton = document.getElementById('saveApiKeyBtn');
-            if (apiKeyText) apiKeyText.textContent = lang.apiKeyText;
-            if (saveButton) saveButton.textContent = lang.saveButton;
+            
+            console.log('API Key Text element:', apiKeyText);
+            console.log('Save Button element:', saveButton);
+            console.log('Current language:', currentLanguage);
+            console.log('Language content:', lang);
+            
+            if (apiKeyText) {
+                apiKeyText.textContent = lang.apiKeyText;
+                console.log('Updated API key text to:', lang.apiKeyText);
+            } else {
+                console.log('API Key Text element not found!');
+            }
+            if (saveButton) {
+                saveButton.textContent = lang.saveButton;
+                console.log('Updated save button to:', lang.saveButton);
+            } else {
+                console.log('Save Button element not found!');
+            }
             
             // Update welcome message
             const welcomeMessage = document.getElementById('welcomeMessage');
