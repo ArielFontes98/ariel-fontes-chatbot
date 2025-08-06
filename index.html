@@ -583,9 +583,9 @@
                 apiKey = newApiKey;
                 localStorage.setItem('openai_api_key', apiKey);
                 document.getElementById('apiKeySection').style.display = 'none';
-                alert('✅ API Key salva com sucesso!');
+                alert(content[currentLanguage].apiKeySuccess);
             } else {
-                alert('❌ Por favor, insira uma API Key válida.');
+                alert(content[currentLanguage].apiKeyError);
             }
         }
         
@@ -601,6 +601,11 @@
                        send: "Enviar",
                        clear: "Limpar",
                        typing: "Ariel está digitando...",
+                       apiKeyText: "🔑 Insira sua OpenAI API Key:",
+                       saveButton: "✅ Salvar",
+                       apiKeySuccess: "✅ API Key salva com sucesso!",
+                       apiKeyError: "❌ Por favor, insira uma API Key válida.",
+                       apiKeyNotSet: "❌ API Key não configurada. Insira sua OpenAI API Key.",
                 systemPrompt: `You are acting as Ariel Fontes. You are answering questions on Ariel Fontes' website, 
                 particularly questions related to Ariel Fontes' career, background, skills and experience. 
                 Your responsibility is to represent Ariel Fontes for interactions on the website as faithfully as possible. 
@@ -668,6 +673,11 @@
                        send: "Send",
                        clear: "Clear",
                        typing: "Ariel is typing...",
+                       apiKeyText: "🔑 Enter your OpenAI API Key:",
+                       saveButton: "✅ Save",
+                       apiKeySuccess: "✅ API Key saved successfully!",
+                       apiKeyError: "❌ Please enter a valid API Key.",
+                       apiKeyNotSet: "❌ API Key not configured. Enter your OpenAI API Key.",
                 systemPrompt: `You are acting as Ariel Fontes. You are answering questions on Ariel Fontes' website, 
                 particularly questions related to Ariel Fontes' career, background, skills and experience. 
                 Your responsibility is to represent Ariel Fontes for interactions on the website as faithfully as possible. 
@@ -735,6 +745,11 @@
                        send: "Enviar",
                        clear: "Limpiar",
                        typing: "Ariel está escribiendo...",
+                       apiKeyText: "🔑 Ingresa tu OpenAI API Key:",
+                       saveButton: "✅ Guardar",
+                       apiKeySuccess: "✅ API Key guardada exitosamente!",
+                       apiKeyError: "❌ Por favor, ingresa una API Key válida.",
+                       apiKeyNotSet: "❌ API Key no configurada. Ingresa tu OpenAI API Key.",
                 systemPrompt: `You are acting as Ariel Fontes. You are answering questions on Ariel Fontes' website, 
                 particularly questions related to Ariel Fontes' career, background, skills and experience. 
                 Your responsibility is to represent Ariel Fontes for interactions on the website as faithfully as possible. 
@@ -807,6 +822,12 @@
             document.querySelector('.clear-btn').textContent = lang.clear;
             document.getElementById('typingIndicator').textContent = lang.typing;
             
+            // Update API key section
+            const apiKeyText = document.querySelector('#apiKeySection p');
+            const saveButton = document.querySelector('#apiKeySection button');
+            if (apiKeyText) apiKeyText.textContent = lang.apiKeyText;
+            if (saveButton) saveButton.textContent = lang.saveButton;
+            
             // Update welcome message
             const welcomeMessage = document.getElementById('welcomeMessage');
             if (welcomeMessage) {
@@ -827,7 +848,7 @@
         async function callOpenAI(message) {
             if (!apiKey) {
                 document.getElementById('apiKeySection').style.display = 'block';
-                throw new Error('❌ API Key não configurada. Insira sua OpenAI API Key.');
+                throw new Error(content[currentLanguage].apiKeyNotSet);
             }
             
             // Use the new API key
@@ -993,15 +1014,38 @@
             const overlay = document.createElement('div');
             overlay.className = 'popup-overlay';
             
+            const loveMessages = {
+                pt: {
+                    title: "💕 Amor da Minha Vida",
+                    message1: "Sim! Eu amo muito a <strong>Maria Eduarda</strong>! ❤️",
+                    message2: "Ela é a pessoa mais especial da minha vida e eu sou muito feliz ao lado dela! 💑",
+                    closeButton: "Fechar"
+                },
+                en: {
+                    title: "💕 Love of My Life",
+                    message1: "Yes! I love <strong>Maria Eduarda</strong> very much! ❤️",
+                    message2: "She is the most special person in my life and I am very happy by her side! 💑",
+                    closeButton: "Close"
+                },
+                es: {
+                    title: "💕 Amor de Mi Vida",
+                    message1: "¡Sí! ¡Amo mucho a <strong>Maria Eduarda</strong>! ❤️",
+                    message2: "¡Ella es la persona más especial de mi vida y soy muy feliz a su lado! 💑",
+                    closeButton: "Cerrar"
+                }
+            };
+            
+            const lang = loveMessages[currentLanguage] || loveMessages.pt;
+            
             const popup = document.createElement('div');
             popup.className = 'love-popup';
             popup.innerHTML = `
-                <h2>💕 Amor da Minha Vida</h2>
+                <h2>${lang.title}</h2>
                 <div class="heart">💖</div>
-                <p>Sim! Eu amo muito a <strong>Maria Eduarda</strong>! ❤️</p>
-                <p>Ela é a pessoa mais especial da minha vida e eu sou muito feliz ao lado dela! 💑</p>
+                <p>${lang.message1}</p>
+                <p>${lang.message2}</p>
                 <div class="heart">💝</div>
-                <button onclick="closeLovePopup()">Fechar</button>
+                <button onclick="closeLovePopup()">${lang.closeButton}</button>
             `;
             
             document.body.appendChild(overlay);
