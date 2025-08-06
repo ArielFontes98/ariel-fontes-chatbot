@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ariel Fontes - AI Chat</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         * {
@@ -428,22 +431,29 @@
         </div>
     </div>
 
-    <div class="chat-container">
-                       <div class="chat-header">
-                   <button class="clear-btn" onclick="clearChat()">Limpar</button>
-                   <div class="profile-section">
-                       <img src="me/minha_foto.jpeg" alt="Ariel Fontes" class="profile-photo">
-                       <div class="profile-info">
-                           <h1>Ariel Fontes</h1>
-                           <p>Program Manager & Consultant</p>
-                           <p>📍 São Paulo, Brazil</p>
-                           <p><a href="https://linkedin.com/in/ariel-fontes-340a51151" target="_blank" style="color: white; text-decoration: none;">🔗 LinkedIn</a></p>
-                       </div>
-                   </div>
-                   <div class="company-logos">
-                       <img src="me/Nubank_logo_2021.svg.png" alt="Nubank" class="company-logo">
-                   </div>
-               </div>
+            <div class="chat-container">
+            <div class="chat-header">
+                <button class="clear-btn" onclick="clearChat()">Limpar</button>
+                <div class="profile-section">
+                    <img src="me/minha_foto.jpeg" alt="Ariel Fontes" class="profile-photo">
+                    <div class="profile-info">
+                        <h1>Ariel Fontes</h1>
+                        <p>Program Manager & Consultant</p>
+                        <p>📍 São Paulo, Brazil</p>
+                        <p><a href="https://linkedin.com/in/ariel-fontes-340a51151" target="_blank" style="color: white; text-decoration: none;">🔗 LinkedIn</a></p>
+                    </div>
+                </div>
+                <div class="company-logos">
+                    <img src="me/Nubank_logo_2021.svg.png" alt="Nubank" class="company-logo">
+                </div>
+            </div>
+            
+            <!-- API Key Input -->
+            <div id="apiKeySection" style="background: #f8f9fa; padding: 15px; border-bottom: 1px solid #e9ecef;">
+                <p style="margin: 0 0 10px 0; font-size: 14px; color: #666;">🔑 Insira sua OpenAI API Key:</p>
+                <input type="password" id="apiKeyInput" placeholder="sk-proj-..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
+                <button onclick="setApiKey()" style="margin-top: 8px; padding: 6px 12px; background: #667eea; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">✅ Salvar</button>
+            </div>
         
                        <div class="chat-messages" id="chatMessages">
                    <div class="message bot-message" id="welcomeMessage">
@@ -466,6 +476,20 @@
     <script>
         let conversationHistory = [];
         let currentLanguage = 'pt';
+        let apiKey = localStorage.getItem('openai_api_key') || '';
+        
+        function setApiKey() {
+            const input = document.getElementById('apiKeyInput');
+            const newApiKey = input.value.trim();
+            if (newApiKey) {
+                apiKey = newApiKey;
+                localStorage.setItem('openai_api_key', apiKey);
+                document.getElementById('apiKeySection').style.display = 'none';
+                alert('✅ API Key salva com sucesso!');
+            } else {
+                alert('❌ Por favor, insira uma API Key válida.');
+            }
+        }
         
                        // Language-specific content
                const content = {
@@ -703,7 +727,10 @@
         });
 
         async function callOpenAI(message) {
-            const apiKey = "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";
+            if (!apiKey) {
+                document.getElementById('apiKeySection').style.display = 'block';
+                throw new Error('❌ API Key não configurada. Insira sua OpenAI API Key.');
+            }
 
             const messages = [
                 { role: "system", content: content[currentLanguage].systemPrompt },
