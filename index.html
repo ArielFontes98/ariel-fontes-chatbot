@@ -1043,9 +1043,11 @@
             // Remove any existing popups first
             closeLovePopup();
             
+            // Create overlay
             const overlay = document.createElement('div');
             overlay.className = 'popup-overlay';
             overlay.style.zIndex = '999998';
+            overlay.onclick = closeLovePopup; // Close when clicking overlay
             
             const loveMessages = {
                 pt: {
@@ -1070,6 +1072,7 @@
             
             const lang = loveMessages[currentLanguage] || loveMessages.pt;
             
+            // Create popup
             const popup = document.createElement('div');
             popup.className = 'love-popup';
             popup.innerHTML = `
@@ -1081,41 +1084,41 @@
                 <button onclick="closeLovePopup()" style="touch-action: manipulation;">${lang.closeButton}</button>
             `;
             
-            // Add touch event listeners for mobile
-            popup.addEventListener('touchstart', function(e) {
+            // Prevent popup from closing when clicking inside it
+            popup.onclick = function(e) {
                 e.stopPropagation();
-            });
+            };
             
-            overlay.addEventListener('touchstart', function(e) {
-                e.stopPropagation();
-                closeLovePopup();
-            });
-            
+            // Add to DOM
             document.body.appendChild(overlay);
             document.body.appendChild(popup);
             
             console.log('Love popup created and added to DOM');
             
-            // Auto close after 5 seconds
+            // Auto close after 8 seconds
             setTimeout(() => {
                 if (document.body.contains(popup)) {
                     closeLovePopup();
                 }
-            }, 5000);
+            }, 8000);
         }
         
         function closeLovePopup() {
             console.log('Closing love popup');
-            const overlay = document.querySelector('.popup-overlay');
-            const popup = document.querySelector('.love-popup');
-            if (overlay) {
+            
+            // Remove all popup overlays
+            const overlays = document.querySelectorAll('.popup-overlay');
+            overlays.forEach(overlay => {
                 overlay.remove();
                 console.log('Overlay removed');
-            }
-            if (popup) {
+            });
+            
+            // Remove all love popups
+            const popups = document.querySelectorAll('.love-popup');
+            popups.forEach(popup => {
                 popup.remove();
                 console.log('Popup removed');
-            }
+            });
         }
         
         // Check for love-related questions
@@ -1123,11 +1126,17 @@
             const loveKeywords = [
                 'namorada', 'namorado', 'maria eduarda', 'maria', 'eduarda',
                 'girlfriend', 'novia', 'amor', 'love', 'amante', 'lover',
-                'casal', 'couple', 'relacionamento', 'relationship'
+                'casal', 'couple', 'relacionamento', 'relationship', 'namoro',
+                'casamento', 'marriage', 'boda', 'wedding', 'noiva', 'fiancée'
             ];
             
             const lowerMessage = message.toLowerCase();
-            return loveKeywords.some(keyword => lowerMessage.includes(keyword));
+            console.log('Checking message for love keywords:', lowerMessage);
+            
+            const found = loveKeywords.some(keyword => lowerMessage.includes(keyword));
+            console.log('Love keywords found:', found);
+            
+            return found;
         }
         
         // Override system prompt for love questions
