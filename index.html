@@ -298,6 +298,85 @@
             background: #764ba2;
         }
 
+        /* Love Popup Styles */
+        .love-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            z-index: 10000;
+            text-align: center;
+            animation: lovePopup 0.5s ease-out;
+            max-width: 300px;
+            width: 90%;
+        }
+
+        @keyframes lovePopup {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .love-popup h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .love-popup p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .love-popup .heart {
+            font-size: 40px;
+            margin: 10px 0;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .love-popup button {
+            background: white;
+            color: #c44569;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .love-popup button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-out;
+        }
+
         /* Responsive Design for Mobile */
         @media (max-width: 768px) {
             body {
@@ -843,6 +922,13 @@
             addMessage(message, true);
             input.value = '';
             
+            // Check for love-related questions
+            if (checkForLoveQuestion(message)) {
+                setTimeout(() => {
+                    showLovePopup();
+                }, 1000);
+            }
+            
             // Add to conversation history
             conversationHistory.push({ role: "user", content: message });
             
@@ -882,6 +968,52 @@
 
         // Initialize content
         updateContent();
+        
+        // Love popup functionality
+        function showLovePopup() {
+            const overlay = document.createElement('div');
+            overlay.className = 'popup-overlay';
+            
+            const popup = document.createElement('div');
+            popup.className = 'love-popup';
+            popup.innerHTML = `
+                <h2>💕 Amor da Minha Vida</h2>
+                <div class="heart">💖</div>
+                <p>Sim! Eu amo muito a <strong>Maria Eduarda</strong>! ❤️</p>
+                <p>Ela é a pessoa mais especial da minha vida e eu sou muito feliz ao lado dela! 💑</p>
+                <div class="heart">💝</div>
+                <button onclick="closeLovePopup()">Fechar</button>
+            `;
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(popup);
+            
+            // Auto close after 5 seconds
+            setTimeout(() => {
+                if (document.body.contains(popup)) {
+                    closeLovePopup();
+                }
+            }, 5000);
+        }
+        
+        function closeLovePopup() {
+            const overlay = document.querySelector('.popup-overlay');
+            const popup = document.querySelector('.love-popup');
+            if (overlay) overlay.remove();
+            if (popup) popup.remove();
+        }
+        
+        // Check for love-related questions
+        function checkForLoveQuestion(message) {
+            const loveKeywords = [
+                'namorada', 'namorado', 'maria eduarda', 'maria', 'eduarda',
+                'girlfriend', 'novia', 'amor', 'love', 'amante', 'lover',
+                'casal', 'couple', 'relacionamento', 'relationship'
+            ];
+            
+            const lowerMessage = message.toLowerCase();
+            return loveKeywords.some(keyword => lowerMessage.includes(keyword));
+        }
     </script>
 </body>
 </html> 
